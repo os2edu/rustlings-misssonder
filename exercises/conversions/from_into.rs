@@ -1,8 +1,6 @@
 // The From trait is used for value-to-value conversions.
 // If From is implemented correctly for a type, the Into trait should work conversely.
 // You can read more about it at https://doc.rust-lang.org/std/convert/trait.From.html
-// Execute `rustlings hint from_into` or use the `hint` watch subcommand for a hint.
-
 #[derive(Debug)]
 struct Person {
     name: String,
@@ -35,10 +33,37 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        let info: Vec<_> = s.split(",").collect();
+        let mut person = Person::default();
+        if info.len() > 2 { return person; }
+        match info.get(0) {
+            None => {
+                return Person::default();
+            }
+            Some(name) => {
+                if name.is_empty() {
+                    return Person::default();
+                }
+                person.name = name.to_string();
+            }
+        }
+        match info.get(1) {
+            None => {
+                return Person::default();
+            }
+            Some(age) => {
+                match age.parse::<usize>() {
+                    Err(_) => { return Person::default(); }
+                    Ok(age) => {
+                        person.age = age;
+                    }
+                }
+            }
+        }
+        person
     }
 }
 
@@ -54,6 +79,7 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn test_default() {
         // Test that the default person is 30 year old John
@@ -61,6 +87,7 @@ mod tests {
         assert_eq!(dp.name, "John");
         assert_eq!(dp.age, 30);
     }
+
     #[test]
     fn test_bad_convert() {
         // Test that John is returned when bad string is provided
@@ -68,6 +95,7 @@ mod tests {
         assert_eq!(p.name, "John");
         assert_eq!(p.age, 30);
     }
+
     #[test]
     fn test_good_convert() {
         // Test that "Mark,20" works
@@ -75,6 +103,7 @@ mod tests {
         assert_eq!(p.name, "Mark");
         assert_eq!(p.age, 20);
     }
+
     #[test]
     fn test_bad_age() {
         // Test that "Mark,twenty" will return the default person due to an error in parsing age

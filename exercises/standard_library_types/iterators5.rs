@@ -6,12 +6,12 @@
 // imperative style for loops. Recreate this counting functionality using
 // iterators. Only the two iterator methods (count_iterator and
 // count_collection_iterator) need to be modified.
-// Execute `rustlings hint iterators5` or use the `hint` watch subcommand for a hint.
+// Execute `rustlings hint iterators5` for hints.
 //
 // Make the code compile and the tests pass.
 
-// I AM NOT DONE
 
+use std::borrow::Borrow;
 use std::collections::HashMap;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -34,7 +34,7 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // map is a hashmap with String keys and Progress values.
     // map = { "variables1": Complete, "from_str": None, ... }
-    todo!();
+    map.iter().filter(|&x| x.1 == &value).count()
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -53,7 +53,7 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    todo!();
+    collection.iter().map(|x| x.iter().filter(|&x| x.1 == &value).count()).reduce(|x, y| x + y).unwrap()
 }
 
 #[cfg(test)]
